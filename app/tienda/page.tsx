@@ -1,68 +1,23 @@
-import Image from "next/image";
-import Link from "next/link";
-import { assets } from "@/lib/assets";
+"use client";
 
-const allProducts = [
-  {
-    id: 1,
-    image: assets.products.tensiometer,
-    category: "MONITOREO",
-    name: "Tensiómetro Digital Pro",
-    description:
-      "Precisión profesional para el control diario de tu presión arterial",
-    price: "$45.990",
-    badge: "Más vendido",
-    badgeColor: "bg-accent",
-  },
-  {
-    id: 2,
-    image: assets.products.oximeter,
-    category: "MONITOREO",
-    name: "Oxímetro de Pulso",
-    description: "Monitorea tu oxigenación de forma rápida y precisa",
-    price: "$28.990",
-    badge: null,
-  },
-  {
-    id: 3,
-    image: assets.products.thermometer,
-    category: "TEMPERATURA",
-    name: "Termómetro Infrarrojo",
-    description: "Medición sin contacto, segura y rápida",
-    price: "$32.990",
-    badge: "Nuevo",
-    badgeColor: "bg-text-primary",
-  },
-  {
-    id: 4,
-    image: assets.extra.smartwatch,
-    category: "MONITOREO",
-    name: "Smartwatch Salud",
-    description: "Monitoreo continuo de ritmo cardíaco y actividad física",
-    price: "$89.990",
-    badge: null,
-  },
-  {
-    id: 5,
-    image: assets.about.stethoscope,
-    category: "DIAGNÓSTICO",
-    name: "Estetoscopio Profesional",
-    description: "Calidad acústica superior para profesionales de la salud",
-    price: "$54.990",
-    badge: null,
-  },
-  {
-    id: 6,
-    image: assets.extra.oximeter2,
-    category: "MONITOREO",
-    name: "Oxímetro Clínico",
-    description: "Precisión hospitalaria para uso doméstico",
-    price: "$38.990",
-    badge: null,
-  },
-];
+import Image from "next/image";
+import { allProducts } from "@/lib/products";
+import { formatCRC } from "@/lib/currency";
+import { useCart } from "@/context/CartContext";
+import { useToast } from "@/context/ToastContext";
+import { Product } from "@/lib/types";
 
 export default function TiendaPage() {
+  const { addItem } = useCart();
+  const { showToast } = useToast();
+
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product);
+    showToast(`${product.name} agregado al carrito`);
+  };
+
   return (
     <div className="min-h-screen bg-pink-soft">
       {/* Header */}
@@ -83,9 +38,8 @@ export default function TiendaPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {allProducts.map((product) => (
-              <Link
+              <div
                 key={product.id}
-                href="#"
                 className="group bg-white rounded-3xl overflow-hidden shadow-card card-hover"
               >
                 {/* Image Container */}
@@ -119,14 +73,17 @@ export default function TiendaPage() {
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-text-primary">
-                      {product.price}
+                      {formatCRC(product.price)}
                     </span>
-                    <button className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-full hover:bg-accent-hover transition-colors duration-200">
+                    <button
+                      onClick={(e) => handleAddToCart(e, product)}
+                      className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-full hover:bg-accent-hover transition-colors duration-200 active:scale-95"
+                    >
                       Agregar
                     </button>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
