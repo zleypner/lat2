@@ -3,6 +3,7 @@ import { DM_Serif_Display, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Providers from "@/components/Providers";
 
 const dmSerifDisplay = DM_Serif_Display({
   weight: "400",
@@ -33,9 +34,11 @@ export default function RootLayout({
       <body
         className={`${dmSerifDisplay.variable} ${inter.variable} font-sans antialiased`}
       >
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <Providers>
+          <Navbar />
+          <main className="pt-20">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
